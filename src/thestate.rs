@@ -3,7 +3,7 @@ use crate::prelude::*;
 /// The available state of shapes and widgets,
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 pub enum TheState {
-    None,
+    Undefined,
 
     // Application States
     Normal,
@@ -15,7 +15,7 @@ pub enum TheState {
 }
 
 #[derive(PartialEq, Eq, Copy, Hash, Clone, Debug)]
-pub enum P {
+pub enum TheProperty {
     X,
     Y,
     Width,
@@ -48,19 +48,19 @@ impl TheStateProperties {
         }
     }
 
-    pub fn contains(&self, key: P) -> bool {
+    pub fn contains(&self, key: TheProperty) -> bool {
         self.properties[key as usize].is_some()
     }
 
-    pub fn get(&self, key: P) -> &Option<Vec<f32>> {
+    pub fn get(&self, key: TheProperty) -> &Option<Vec<f32>> {
         &self.properties[key as usize]
     }
 
-    pub fn set(&mut self, key: P, value: Vec<f32>) {
+    pub fn set(&mut self, key: TheProperty, value: Vec<f32>) {
         self.properties[key as usize] = Some(value);
     }
 
-    pub fn test_mask(&self, key: P) -> bool {
+    pub fn test_mask(&self, key: TheProperty) -> bool {
         self.mask[key as usize]
     }
 
@@ -73,7 +73,7 @@ impl TheStateProperties {
     /// Returns the animation duration for this property state
     pub fn get_duration(&self) -> f32 {
         let mut duration = 100.0_f32;
-        if let Some(dur) = self.get(P::Duration) {
+        if let Some(dur) = self.get(TheProperty::Duration) {
             duration = dur[0] as f32
         }
         duration
@@ -88,7 +88,7 @@ pub struct TheStateTransition {
 
     pub start_time          : u128,
 
-    trans_values            : FxHashMap<P, Vec<Vec<f32>>>,
+    trans_values            : FxHashMap<TheProperty, Vec<Vec<f32>>>,
     duration                : usize,
 }
 
@@ -105,7 +105,7 @@ impl TheStateTransition {
         }
     }
 
-    pub fn precalc(&mut self, keys: Vec<P>) {
+    pub fn precalc(&mut self, keys: Vec<TheProperty>) {
         self.duration = self.dest.get_duration() as usize;
 
         for key in keys {
@@ -132,7 +132,7 @@ impl TheStateTransition {
         }
     }
 
-    pub fn get(&self, key: P, time: &u128) -> Option<&Vec<f32>> {
+    pub fn get(&self, key: TheProperty, time: &u128) -> Option<&Vec<f32>> {
 
         if let Some(values) = self.trans_values.get(&key) {
             let t = ((time - self.start_time) as usize).min(self.duration);

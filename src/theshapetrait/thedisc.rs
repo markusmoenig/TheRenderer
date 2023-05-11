@@ -13,10 +13,10 @@ impl TheShapeTrait for TheDisc {
     fn new(id: u32) -> Self {
 
         let mut normal = TheStateProperties::new(TheState::Normal);
-        normal.set(P::X, vec![0.0]);
-        normal.set(P::Y, vec![0.0]);
-        normal.set(P::Radius, vec![100.0]);
-        normal.set(P::Color, vec![0.0, 0.0, 0.0, 1.0]);
+        normal.set(TheProperty::X, vec![0.0]);
+        normal.set(TheProperty::Y, vec![0.0]);
+        normal.set(TheProperty::Radius, vec![100.0]);
+        normal.set(TheProperty::Color, vec![0.0, 0.0, 0.0, 1.0]);
         //normal.set(P::B, vec![0.0]);
         //normal.set(P::BC, vec![0.0, 0.0, 0.0, 1.0]);
 
@@ -108,54 +108,54 @@ impl TheShapeTrait for TheDisc {
     //     }
     // }
 
-    // /// Get the given property from the state
-    // #[inline(always)]
-    // fn get(&self, key: P, state: State, time: &u128) -> Option<&Vec<F>> {
-    //     //println!("Get {} {:?} {:?}", name, state, fallback);
+    /// Get the given property from the state
+    #[inline(always)]
+    fn get(&self, key: TheProperty, state: TheState, time: &u128) -> Option<&Vec<f32>> {
+        //println!("Get {} {:?} {:?}", name, state, fallback);
 
-    //     if let Some(transition) = &self.transition {
-    //         return transition.get(key, time);
-    //     } else
-    //     if let Some(state_props) = self.states.get(&state) {
-    //         if let Some(v) = state_props.get(key) {
-    //             return Some(v);
-    //         } else {
-    //             if let Some(state_props) = self.states.get(&State::Normal) {
-    //                 if let Some(v) = state_props.get(key) {
-    //                     return Some(v);
-    //                 }
-    //             }
-    //         }
-    //     } else
-    //     if let Some(state_props) = self.states.get(&State::Normal) {
-    //         if let Some(v) = state_props.get(key) {
-    //             return Some(v);
-    //         }
-    //     }
-    //     None
-    // }
+        if let Some(transition) = &self.transition {
+            return transition.get(key, time);
+        } else
+        if let Some(state_props) = self.states.get(&state) {
+            if let Some(v) = state_props.get(key) {
+                return Some(v);
+            } else {
+                if let Some(state_props) = self.states.get(&TheState::Normal) {
+                    if let Some(v) = state_props.get(key) {
+                        return Some(v);
+                    }
+                }
+            }
+        } else
+        if let Some(state_props) = self.states.get(&TheState::Normal) {
+            if let Some(v) = state_props.get(key) {
+                return Some(v);
+            }
+        }
+        None
+    }
 
-    // fn get_current(&self, key: P, time: &u128) -> Option<&Vec<F>> {
-    //     self.get(key, self.current_state, time)
-    // }
+    fn get_current(&self, key: TheProperty, time: &u128) -> Option<&Vec<f32>> {
+        self.get(key, self.current_state, time)
+    }
 
-    // /// Set the given property for the state
-    // fn set(&mut self, key: P, value: Vec<F>, state: State) {
-    //     //println!("Set {:?} {:?} {:?}", key, value, state);
-    //     if let Some(state_props) = self.states.get_mut(&state) {
-    //         state_props.set(key, value);
-    //     } else {
-    //         let mut state_props = StateProperties::new(state);
-    //         state_props.set(key, value);
-    //         self.states.insert(state, state_props);
-    //     }
-    // }
+    /// Set the given property for the state
+    fn set(&mut self, key: TheProperty, value: Vec<f32>, state: TheState) {
+        //println!("Set {:?} {:?} {:?}", key, value, state);
+        if let Some(state_props) = self.states.get_mut(&state) {
+            state_props.set(key, value);
+        } else {
+            let mut state_props = TheStateProperties::new(state);
+            state_props.set(key, value);
+            self.states.insert(state, state_props);
+        }
+    }
 
     #[inline(always)]
     fn distance(&self, pos: &Vec2f, rect: &mut Vec4f, time: &u128) -> f32 {
-        let r = [100.0];//self.get(P::R, self.current_state, time).unwrap();
-        let x = [100.0];//self.get(P::X, self.current_state, time).unwrap();
-        let y = [100.0];//self.get(P::Y, self.current_state, time).unwrap();
+        let r = self.get(TheProperty::Radius, self.current_state, time).unwrap();
+        let x = self.get(TheProperty::X, self.current_state, time).unwrap();
+        let y = self.get(TheProperty::Y, self.current_state, time).unwrap();
 
         rect.x = x[0] - r[0];
         rect.y = y[0] - r[0];

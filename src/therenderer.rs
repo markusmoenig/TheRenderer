@@ -12,9 +12,6 @@ pub struct TheRenderer {
 
     /// The counter for space ids
     pub space_id_counter        : u32,
-
-    /// The counter for shape ids
-    pub shape_id_counter        : u32,
 }
 
 /// The main rendering class.
@@ -25,7 +22,6 @@ impl TheRenderer {
             buffer              : TheColorBuffer::new(100, 100),
 
             space_id_counter    : 1,
-            shape_id_counter    : 0,
         }
     }
 
@@ -49,23 +45,11 @@ impl TheRenderer {
         self.buffer.convert_to_u8_mt(pixels);
     }
 
-    ///
-    pub fn add_shape(&mut self, space_id: u32, theshape: TheShapes) -> u32 {
-
-        let shape;
-        match theshape {
-            TheShapes::Disc => {
-                shape = Box::new(TheDisc::new(self.shape_id_counter));
-            }
+    pub fn get_space_mut(&mut self, space_id: u32) -> Option<&mut TheSpace> {
+        if space_id == 0 {
+            return Some(&mut self.world_space);
         }
-
-        if self.world_space.id == space_id {
-            self.world_space.shapes.push(shape);
-        }
-
-        let last_id = self.shape_id_counter;
-        self.shape_id_counter += 1;
-        last_id
+        None
     }
 
     /// Gets the current time in milliseconds

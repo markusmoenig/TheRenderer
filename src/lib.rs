@@ -12,12 +12,12 @@ pub mod prelude {
     pub use crate::TheColor;
 
     pub use crate::therenderer::TheRenderer;
-    pub use crate::thespace::TheSpace;
+    pub use crate::thespace::{TheSpace, TheSpaceCoordinate, TheSpaceCoordinate::*};
     pub use crate::therect::TheRect;
     pub use crate::thebuffer::TheColorBuffer;
-    pub use crate::thestate::*;
+    pub use crate::thestate::{*, TheProperty::*, TheState::*};
 
-    pub use crate::theshapetrait::{TheShapeTrait, TheShapes};
+    pub use crate::theshapetrait::{TheShapeTrait, TheShapes, TheShapes::*};
     pub use crate::theshapetrait::thedisc::TheDisc;
 
     pub use crate::theshadertrait::TheShaderTrait;

@@ -17,10 +17,10 @@ pub trait TheShapeTrait : Sync + Send {
 
     // fn set_state(&mut self, state: State, update: &mut EventUpdate);
 
-    // fn get(&self, key: P, state: State, time: &u128) -> Option<&Vec<F>>;
-    // fn get_current(&self, key: P, time: &u128) -> Option<&Vec<F>>;
+    fn get(&self, key: TheProperty, state: TheState, time: &u128) -> Option<&Vec<f32>>;
+    fn get_current(&self, key: TheProperty, time: &u128) -> Option<&Vec<f32>>;
 
-    // fn set(&mut self, key: P, value: Vec<F>, state: State);
+    fn set(&mut self, key: TheProperty, value: Vec<f32>, state: TheState);
 
     // fn test_mask(&self, key: P) -> bool { false }
 
