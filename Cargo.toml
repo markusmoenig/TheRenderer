@@ -1,0 +1,8 @@
+[package]
+name = "therenderer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+maths-rs = { version = "0.2", features = ["short_types", "short_hand_constructors", "casts", "serde"] }
+rayon = "1.7.0"
