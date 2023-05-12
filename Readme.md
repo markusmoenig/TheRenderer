@@ -1,6 +1,6 @@
 A fast, state based 2D renderer for applications and games, currently under development.
 
-TheRenderer is integrated in (TheFramework)[https://github.com/markusmoenig/TheFramework], a trait based application and game framework, but can be used independently as well.
+TheRenderer is integrated in [TheFramework](https://github.com/markusmoenig/TheFramework), a trait based application and game framework, but can be used independently as well.
 
 ## Features
 
@@ -10,7 +10,7 @@ TheRenderer is integrated in (TheFramework)[https://github.com/markusmoenig/TheF
 * TheRenderer only updates the screen when needed.
 * Fast multi-threaded rendering and blending of shapes and spaces.
 
-The integration in (TheFramework)[https://github.com/markusmoenig/TheFramework] allows the creation of native, cross platform applications and games. This integration even allows for native macOS, iOS and tvOS apps and games using the supplied Xcode project.
+The integration in [TheFramework](https://github.com/markusmoenig/TheFramework) allows the creation of native, cross platform applications and games. This integration even allows for native macOS, iOS and tvOS apps and games using the supplied Xcode project.
 
 ## Goals
 
