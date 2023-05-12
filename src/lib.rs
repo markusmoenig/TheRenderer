@@ -9,6 +9,13 @@ pub mod theevent;
 
 pub type TheColor = [f32; 4];
 
+use rust_embed::RustEmbed;
+#[derive(RustEmbed)]
+#[folder = "embedded/"]
+#[exclude = ".txt"]
+#[exclude = ".DS_Store"]
+pub struct Embedded;
+
 pub mod prelude {
     pub use crate::TheColor;
 

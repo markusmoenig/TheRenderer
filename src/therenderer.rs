@@ -25,6 +25,7 @@ impl TheRenderer {
         }
     }
 
+    /// Draws the space.
     pub fn draw(&mut self, pixels: &mut [u8], width: usize, height: usize) {
 
         // Resize the color buffer if necessary
