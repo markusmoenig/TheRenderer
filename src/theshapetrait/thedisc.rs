@@ -67,25 +67,27 @@ impl TheShapeTrait for TheDisc {
     //     //self.set(P::H, vec![rect.height as f32], State::Normal);
     // }
 
-    // fn set_state(&mut self, state: State, update: &mut EventUpdate) {
-    //     let changed = state != self.current_state;
+    fn set_state(&mut self, state: TheState, update: &mut TheEventUpdate) {
+        let changed = state != self.current_state;
 
-    //     if changed  {
-    //         update.single = true;
-    //         let source_props = self.states.get(&self.current_state);
-    //         let dest_props = self.states.get(&state);
-    //         if source_props.is_some() && dest_props.is_some() {
-    //             let mut transition = StateTransition::new(source_props.unwrap().clone(), dest_props.unwrap().clone(), update.time);
-    //             transition.precalc(vec![P::X, P::Y, P::R, P::C, P::B, P::BC]);
-    //             self.transition = Some(transition);
-    //             update.integrate_until(update.time + dest_props.unwrap().get_duration() as u128);
-    //         } else {
-    //             self.transition = None;
-    //         }
+        if changed  {
+            update.single = true;
+            let source_props = self.states.get(&self.current_state);
+            let dest_props = self.states.get(&state);
+            if source_props.is_some() && dest_props.is_some() {
+                let mut transition = TheStateTransition::new(source_props.unwrap().clone(), dest_props.unwrap().clone(), update.time);
+                let mut properties_to_precalc = vec![TheProperty::X, TheProperty::Y, TheProperty::Radius];
+                properties_to_precalc.append(&mut self.shader.get_properties().clone());
+                transition.precalc(properties_to_precalc);
+                self.transition = Some(transition);
+                update.integrate_until(update.time + dest_props.unwrap().get_duration() as u128);
+            } else {
+                self.transition = None;
+            }
 
-    //         self.current_state = state;
-    //     }
-    // }
+            self.current_state = state;
+        }
+    }
 
     // fn supported_properties(&self) -> FxHashMap<String, F> {
     //     let mut map = FxHashMap::default();

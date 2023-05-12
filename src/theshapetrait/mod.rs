@@ -15,7 +15,7 @@ pub trait TheShapeTrait : Sync + Send {
 
     // fn init(&mut self) {}
 
-    // fn set_state(&mut self, state: State, update: &mut EventUpdate);
+    fn set_state(&mut self, state: TheState, update: &mut TheEventUpdate);
 
     fn get(&self, key: TheProperty, state: TheState, time: &u128) -> Option<&Vec<f32>>;
     fn get_current(&self, key: TheProperty, time: &u128) -> Option<&Vec<f32>>;

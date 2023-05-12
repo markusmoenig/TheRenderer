@@ -1,5 +1,5 @@
 use crate::prelude::*;
-
+use std::time::{SystemTime, UNIX_EPOCH};
 use rayon::{slice::ParallelSliceMut, iter::{IndexedParallelIterator, ParallelIterator}};
 
 /// The coordinate system for spaces
@@ -19,6 +19,9 @@ pub struct TheSpace {
 
     pub shapes                  : Vec<Box<dyn TheShapeTrait>>,
 
+    /// The event update class, manages timing and window refresh.
+    pub update                  : TheEventUpdate,
+
     /// The counter for shape ids
     pub shape_id_counter        : u32,
 }
@@ -33,13 +36,18 @@ impl TheSpace {
 
             shapes              : vec![],
 
+            update              : TheEventUpdate::new(),
+
             shape_id_counter    : 0,
         }
     }
 
-    pub fn draw_mt(&mut self, buffer: &mut TheColorBuffer) {
+    pub fn draw_mt(&mut self, buffer: &mut TheColorBuffer, time: &u128) {
         let width = buffer.width;
         let height = buffer.height as f32;
+
+        self.rect.width = buffer.width;
+        self.rect.height = buffer.height;
 
         buffer.pixels
             .par_rchunks_exact_mut(width * 4)
@@ -51,9 +59,9 @@ impl TheSpace {
                     let x = (i % width) as f32;
                     let y = (i / width) as f32;
 
-                    let uv = vec2f(x / width as f32, y / height);
+                    //let uv = vec2f(x / width as f32, y / height);
 
-                    let mut color = [uv.x, uv.y, 0.0, 1.0];
+                    let mut color = [0.0, 0.0, 0.0, 1.0];
 
                     for shape in &self.shapes {
 
@@ -75,7 +83,7 @@ impl TheSpace {
                             ]
                         }
 
-                        let distance = shape.distance(&pos, &mut rect, &0);
+                        let distance = shape.distance(&pos, &mut rect, time);
                         if distance <= 0.0 {
                             let shader = shape.get_shader();
 
@@ -85,7 +93,7 @@ impl TheSpace {
                             let mut properties : Vec<&Vec<f32>> = vec![];
 
                             for prop in needed {
-                                if let Some(p) = shape.get_current(*prop, &0) {
+                                if let Some(p) = shape.get_current(*prop, time) {
                                     properties.push(p);
                                 }
                             }
@@ -106,6 +114,17 @@ impl TheSpace {
         self.coord_system = coord_system;
     }
 
+    /// Sets the state for the given shape.
+    pub fn set_shape_state(&mut self, shape_id: u32, state: TheState) {
+        self.update.time = self.get_time();
+        for shape in &mut self.shapes {
+            if shape.id() == shape_id {
+                shape.set_state(state, &mut self.update);
+                break;
+            }
+        }
+    }
+
     /// Sets the coordinate system for the space.
     pub fn set_shape_property(&mut self, shape_id: u32, state: TheState, property: TheProperty, value: Vec<f32>) {
         for shape in &mut self.shapes {
@@ -116,7 +135,7 @@ impl TheSpace {
         }
     }
 
-    /// Adds a new shape to the space
+    /// Adds a new shape to the space.
     pub fn add_shape(&mut self, theshape: TheShapes) -> u32 {
 
         let shape;
@@ -131,5 +150,43 @@ impl TheSpace {
         let last_id = self.shape_id_counter;
         self.shape_id_counter += 1;
         last_id
+    }
+
+    /// Gets the shape at the given position.
+    pub fn get_shape_at(&self, x: f32, y: f32) -> Option<u32> {
+
+        let pos = match self.coord_system {
+            LeftTop => vec2f(x, y),
+            Center => vec2f(x - self.rect.width as f32 / 2.0, y - self.rect.height as f32 / 2.0),
+            LeftBottom => vec2f(x, self.rect.height as f32 - y),
+        };
+
+        let time = &self.get_time();
+        for i in 0..self.shapes.len() {
+            let mut rect = Vec4f::zero();
+            let dist = self.shapes[i].distance(&pos, &mut rect, time);
+            if dist <= 0.0 {
+                return Some(i as u32);
+            }
+        }
+        None
+    }
+
+    /// Returns true if the window needs an update
+    pub fn needs_update(&mut self) -> bool {
+        let time: u128 = self.get_time();
+        if self.update.single || self.update.until > time {
+            self.update.single = false;
+            return true;
+        }
+        false
+    }
+
+    /// Gets the current time in milliseconds
+    fn get_time(&self) -> u128 {
+        let stop = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("Time went backwards");
+            stop.as_millis()
     }
 }

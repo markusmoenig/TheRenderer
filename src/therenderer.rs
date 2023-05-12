@@ -37,19 +37,25 @@ impl TheRenderer {
         // Always keep the world space size fixed to the drawing size
         self.world_space.rect = TheRect::new(0, 0, width, height);
 
-        let start_time = self.get_time();
-        self.world_space.draw_mt(&mut self.buffer);
+        let time = self.get_time();
+        self.world_space.draw_mt(&mut self.buffer, &time);
         let end_time = self.get_time();
-        println!("Time: {}", end_time - start_time);
+        println!("Time: {}", end_time - time);
 
         self.buffer.convert_to_u8_mt(pixels);
     }
 
+    /// Returns the space for the given id
     pub fn get_space_mut(&mut self, space_id: u32) -> Option<&mut TheSpace> {
         if space_id == 0 {
             return Some(&mut self.world_space);
         }
         None
+    }
+
+    /// Returns true if the window needs an update
+    pub fn needs_update(&mut self) -> bool {
+        self.world_space.needs_update()
     }
 
     /// Gets the current time in milliseconds

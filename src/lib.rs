@@ -5,6 +5,7 @@ pub mod theshadertrait;
 pub mod thebuffer;
 pub mod theshapetrait;
 pub mod thestate;
+pub mod theevent;
 
 pub type TheColor = [f32; 4];
 
@@ -16,6 +17,7 @@ pub mod prelude {
     pub use crate::therect::TheRect;
     pub use crate::thebuffer::TheColorBuffer;
     pub use crate::thestate::{*, TheProperty::*, TheState::*};
+    pub use crate::theevent::TheEventUpdate;
 
     pub use crate::theshapetrait::{TheShapeTrait, TheShapes, TheShapes::*};
     pub use crate::theshapetrait::thedisc::TheDisc;
