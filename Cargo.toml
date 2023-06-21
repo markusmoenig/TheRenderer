@@ -8,3 +8,4 @@ maths-rs = { version = "0.2", features = ["short_types", "short_hand_constructor
 rayon = "1.7.0"
 rustc-hash = "1.1.0"
 rust-embed = { version = "6.6.1", default-features = true, features = ["include-exclude"] }
+fontdue = "0.7.3"

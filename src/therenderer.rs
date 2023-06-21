@@ -10,6 +10,9 @@ pub struct TheRenderer {
     /// The color buffer all spaces draw into.
     pub buffer                  : TheColorBuffer,
 
+    /// Shared resources
+    pub shared                  : TheShared,
+
     /// The counter for space ids
     pub space_id_counter        : u32,
 }
@@ -20,6 +23,8 @@ impl TheRenderer {
         Self {
             world_space         : TheSpace::new(0),
             buffer              : TheColorBuffer::new(100, 100),
+
+            shared              : TheShared::new(),
 
             space_id_counter    : 1,
         }
