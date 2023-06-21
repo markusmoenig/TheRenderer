@@ -2,6 +2,10 @@
 name = "therenderer"
 version = "0.1.0"
 edition = "2021"
+description = "A 2D rendering framework, part of TheFramework app framework."
+license = "MIT"
+keywords = ["2d", "graphics", "rendering"]
+repository = "https://github.com/markusmoenig/therenderer.git"
 
 [dependencies]
 maths-rs = { version = "0.2", features = ["short_types", "short_hand_constructors", "casts", "serde"] }
