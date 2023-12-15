@@ -1,6 +1,6 @@
 [package]
 name = "therenderer"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A 2D rendering framework, part of TheFramework app framework."
 license = "MIT"
@@ -11,5 +11,12 @@ repository = "https://github.com/markusmoenig/therenderer.git"
 maths-rs = { version = "0.2", features = ["short_types", "short_hand_constructors", "casts", "serde"] }
 rayon = "1.7.0"
 rustc-hash = "1.1.0"
-rust-embed = { version = "6.6.1", default-features = true, features = ["include-exclude"] }
-fontdue = "0.7.3"
+rust-embed = { version = "8", default-features = true, features = ["include-exclude"] }
+fontdue = "0.8.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1"
+console_log = "1.0.0"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["GpuTextureFormat"] }

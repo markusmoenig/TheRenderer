@@ -1,4 +1,5 @@
 use crate::prelude::*;
+#[cfg(not(target_arch = "wasm32"))]
 use std::time::{SystemTime, UNIX_EPOCH};
 use rayon::{slice::ParallelSliceMut, iter::{IndexedParallelIterator, ParallelIterator}};
 
@@ -184,9 +185,18 @@ impl TheSpace {
 
     /// Gets the current time in milliseconds
     fn get_time(&self) -> u128 {
-        let stop = SystemTime::now()
+        let time;
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let t = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .expect("Time went backwards");
-            stop.as_millis()
+            time = t.as_millis();
+        }
+        #[cfg(target_arch = "wasm32")]
+        {
+            time = web_sys::window().unwrap().performance().unwrap().now() as u128;
+        }
+        time
     }
 }
